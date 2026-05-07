@@ -44,7 +44,7 @@ export const ProblemCard = ({
           : selectedQuotient === null
             ? 'Ještě vyber podíl.'
             : selectedRemainder === null
-              ? 'Ještě vyber zbytek.'
+              ? 'Podíl sedí, teď vyber zbytek.'
               : 'Kontroluji odpověď.';
 
   return (

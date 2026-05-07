@@ -23,12 +23,11 @@ export const App = () => {
   const completed = round > TOTAL_ROUNDS;
   const progressValue = useMemo(() => Math.min(round - 1, TOTAL_ROUNDS), [round]);
 
-  const markWrong = () => {
+  const markWrong = (reset: () => void) => {
     setAnswerState('wrong');
     setStreak(0);
     window.setTimeout(() => {
-      setSelectedQuotient(null);
-      setSelectedRemainder(null);
+      reset();
       setAnswerState('idle');
     }, WRONG_TRANSITION_MS);
   };
@@ -50,8 +49,8 @@ export const App = () => {
   };
 
   const checkAnswer = (quotient: number, remainder: number) => {
-    if (quotient !== problem.quotient || remainder !== problem.remainder) {
-      markWrong();
+    if (remainder !== problem.remainder) {
+      markWrong(() => setSelectedRemainder(null));
       return;
     }
 
@@ -70,7 +69,15 @@ export const App = () => {
 
     setSelectedQuotient(value);
 
-    if (selectedRemainder !== null) {
+    if (value !== problem.quotient) {
+      markWrong(() => {
+        setSelectedQuotient(null);
+        setSelectedRemainder(null);
+      });
+      return;
+    }
+
+    if (selectedRemainder !== null && selectedRemainder === problem.remainder) {
       checkAnswer(value, selectedRemainder);
     }
   };
