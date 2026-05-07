@@ -10,6 +10,11 @@ const TOTAL_ROUNDS = 10;
 const NEXT_QUESTION_MS = 650;
 const WRONG_TRANSITION_MS = 900;
 
+type BestStats = {
+  score: number;
+  streak: number;
+};
+
 export const App = () => {
   const [problem, setProblem] = useState(() => generateProblem());
   const [selectedQuotient, setSelectedQuotient] = useState<number | null>(null);
@@ -19,10 +24,18 @@ export const App = () => {
   const [mistakes, setMistakes] = useState(0);
   const [round, setRound] = useState(1);
   const [answerState, setAnswerState] = useState<AnswerState>('idle');
-  const [bestScore, setBestScore] = useLocalStorage('division-best-score', 0);
+  const [legacyBestScore] = useLocalStorage('division-best-score', 0);
+  const [bestStats, setBestStats] = useLocalStorage<BestStats>('division-best-stats', {
+    score: legacyBestScore,
+    streak: 0,
+  });
 
   const completed = round > TOTAL_ROUNDS;
   const progressValue = useMemo(() => Math.min(round - 1, TOTAL_ROUNDS), [round]);
+  const visibleBestStats = {
+    score: Math.max(bestStats.score, legacyBestScore, score),
+    streak: Math.max(bestStats.streak, streak),
+  };
 
   const markWrong = (reset: () => void) => {
     setAnswerState('wrong');
@@ -36,7 +49,6 @@ export const App = () => {
 
   const moveToNextProblem = (nextScore: number) => {
     if (round >= TOTAL_ROUNDS) {
-      setBestScore(Math.max(bestScore, nextScore));
       setRound((current) => current + 1);
       return;
     }
@@ -60,6 +72,10 @@ export const App = () => {
     const nextScore = score + 10 + Math.min(nextStreak, 5) * 2;
     setScore(nextScore);
     setStreak(nextStreak);
+    setBestStats((current) => ({
+      score: Math.max(current.score, legacyBestScore, nextScore),
+      streak: Math.max(current.streak, nextStreak),
+    }));
     setAnswerState('correct');
     moveToNextProblem(nextScore);
   };
@@ -116,8 +132,9 @@ export const App = () => {
 
         <div className="stats-grid">
           <StatPill label="Skóre" value={score} />
+          <StatPill label="Série" value={streak} tone="purple" />
           <StatPill label="Chyby" value={mistakes} tone="red" />
-          <StatPill label="Nejlepší" value={bestScore} tone="blue" />
+          <StatPill label="Nejlepší" value={`${visibleBestStats.score}/${visibleBestStats.streak}`} tone="blue" />
         </div>
 
         <ProgressBar value={progressValue} max={TOTAL_ROUNDS} />
@@ -126,7 +143,10 @@ export const App = () => {
           <section className="finish-card">
             <p className="eyebrow">Hotovo</p>
             <h2>Máš {score} bodů.</h2>
-            <p>Chybných odpovědí: {mistakes}. Nejlepší skóre je {Math.max(bestScore, score)}.</p>
+            <p>
+              Chybných odpovědí: {mistakes}. Nejlepší skóre/série: {visibleBestStats.score}/
+              {visibleBestStats.streak}.
+            </p>
             <button className="primary-button primary-button--wide" type="button" onClick={restart}>
               Hrát znovu
             </button>

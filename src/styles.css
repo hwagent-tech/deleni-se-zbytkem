@@ -114,7 +114,7 @@ h1 {
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -523,24 +523,24 @@ h1 {
   }
 
   .stats-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 8px;
   }
 
   .stat-pill {
     min-height: 58px;
     gap: 2px;
-    padding: 10px 8px;
+    padding: 10px 6px;
     border-radius: 16px;
     text-align: center;
   }
 
   .stat-pill span {
-    font-size: 0.76rem;
+    font-size: 0.7rem;
   }
 
   .stat-pill strong {
-    font-size: 1.5rem;
+    font-size: 1.35rem;
   }
 
   .problem-card,
