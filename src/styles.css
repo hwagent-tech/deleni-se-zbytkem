@@ -152,6 +152,10 @@ h1 {
   background: linear-gradient(135deg, #0076c9, #23c4d8);
 }
 
+.stat-pill--red {
+  background: linear-gradient(135deg, #d82843, #ff725c);
+}
+
 .progress {
   display: grid;
   grid-template-columns: 1fr auto;

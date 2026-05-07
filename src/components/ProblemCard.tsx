@@ -76,11 +76,11 @@ export const ProblemCard = ({
             {problem.quotientOptions.map((option) => {
               const isSelected = selectedQuotient === option;
               const feedbackClass =
-                answerState === 'idle'
-                  ? isSelected
-                    ? 'answer-button--selected'
-                    : ''
-                  : answerState === 'correct' && isSelected
+                isSelected && option === problem.quotient
+                  ? 'answer-button--correct'
+                  : isSelected && option !== problem.quotient
+                    ? 'answer-button--wrong'
+                    : answerState === 'correct' && isSelected
                     ? 'answer-button--correct'
                     : answerState === 'wrong' && isSelected
                       ? 'answer-button--wrong'
@@ -108,7 +108,7 @@ export const ProblemCard = ({
             {problem.remainderOptions.map((option) => {
               const isSelected = selectedRemainder === option;
               const feedbackClass =
-                answerState === 'idle'
+                answerState === 'idle' || selectedQuotient === null
                   ? isSelected
                     ? 'answer-button--selected'
                     : ''

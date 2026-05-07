@@ -1,7 +1,7 @@
 type StatPillProps = {
   label: string;
   value: number | string;
-  tone?: 'orange' | 'purple' | 'blue';
+  tone?: 'orange' | 'purple' | 'blue' | 'red';
 };
 
 export const StatPill = ({ label, value, tone = 'orange' }: StatPillProps) => (

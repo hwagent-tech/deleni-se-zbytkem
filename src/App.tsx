@@ -6,7 +6,7 @@ import { useLocalStorage } from './hooks/useLocalStorage';
 import type { AnswerState } from './types';
 import { generateProblem } from './utils/problemGenerator';
 
-const TOTAL_ROUNDS = 12;
+const TOTAL_ROUNDS = 10;
 const NEXT_QUESTION_MS = 650;
 const WRONG_TRANSITION_MS = 900;
 
@@ -16,6 +16,7 @@ export const App = () => {
   const [selectedRemainder, setSelectedRemainder] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
+  const [mistakes, setMistakes] = useState(0);
   const [round, setRound] = useState(1);
   const [answerState, setAnswerState] = useState<AnswerState>('idle');
   const [bestScore, setBestScore] = useLocalStorage('division-best-score', 0);
@@ -26,6 +27,7 @@ export const App = () => {
   const markWrong = (reset: () => void) => {
     setAnswerState('wrong');
     setStreak(0);
+    setMistakes((current) => current + 1);
     window.setTimeout(() => {
       reset();
       setAnswerState('idle');
@@ -100,6 +102,7 @@ export const App = () => {
     setSelectedRemainder(null);
     setScore(0);
     setStreak(0);
+    setMistakes(0);
     setRound(1);
     setAnswerState('idle');
   };
@@ -113,7 +116,7 @@ export const App = () => {
 
         <div className="stats-grid">
           <StatPill label="Skóre" value={score} />
-          <StatPill label="Série" value={streak} tone="purple" />
+          <StatPill label="Chyby" value={mistakes} tone="red" />
           <StatPill label="Nejlepší" value={bestScore} tone="blue" />
         </div>
 
@@ -123,7 +126,7 @@ export const App = () => {
           <section className="finish-card">
             <p className="eyebrow">Hotovo</p>
             <h2>Máš {score} bodů.</h2>
-            <p>Nejlepší uložené skóre je {Math.max(bestScore, score)} bodů.</p>
+            <p>Chybných odpovědí: {mistakes}. Nejlepší skóre je {Math.max(bestScore, score)}.</p>
             <button className="primary-button primary-button--wide" type="button" onClick={restart}>
               Hrát znovu
             </button>
