@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Dělení se zbytkem">
+  <rect width="512" height="512" rx="112" fill="#391052"/>
+  <circle cx="130" cy="118" r="82" fill="#ff8b22"/>
+  <circle cx="398" cy="406" r="96" fill="#23c4d8"/>
+  <rect x="82" y="102" width="348" height="308" rx="72" fill="#fff8ef"/>
+  <circle cx="256" cy="184" r="26" fill="#8d35d4"/>
+  <rect x="150" y="242" width="212" height="30" rx="15" fill="#261034"/>
+  <circle cx="256" cy="330" r="26" fill="#8d35d4"/>
+</svg>

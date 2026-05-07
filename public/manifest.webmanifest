@@ -1,0 +1,27 @@
+{
+  "name": "Dělení se zbytkem",
+  "short_name": "Dělení",
+  "description": "Procvičování dělení se zbytkem.",
+  "id": "/",
+  "lang": "cs",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fff8ef",
+  "theme_color": "#391052",
+  "categories": ["education", "games"],
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/apple-touch-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml"
+    }
+  ]
+}
