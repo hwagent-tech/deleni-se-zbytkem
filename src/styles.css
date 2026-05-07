@@ -289,17 +289,54 @@ h1 {
   justify-self: center;
 }
 
-.answer-grid {
+.answer-columns {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
   animation: optionsIn 260ms ease both;
+}
+
+.answer-group {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 20px;
+}
+
+.answer-group--quotient {
+  background: rgba(141, 53, 212, 0.1);
+}
+
+.answer-group--remainder {
+  background: rgba(22, 119, 200, 0.1);
+}
+
+.answer-group__label {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 950;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.answer-group--quotient .answer-group__label {
+  color: var(--violet);
+}
+
+.answer-group--remainder .answer-group__label {
+  color: var(--blue);
+}
+
+.answer-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
 }
 
 .answer-button {
   position: relative;
   overflow: hidden;
-  min-height: 86px;
+  min-height: 76px;
   color: var(--ink);
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(247, 238, 255, 0.96));
   box-shadow:
@@ -307,6 +344,40 @@ h1 {
     inset 0 0 0 2px rgba(141, 53, 212, 0.12);
   font-size: clamp(1.75rem, 2.2rem, 2.5rem);
   isolation: isolate;
+}
+
+.answer-button--quotient {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(245, 235, 255, 0.98));
+  box-shadow:
+    0 14px 28px rgba(141, 53, 212, 0.14),
+    inset 0 0 0 2px rgba(141, 53, 212, 0.16);
+}
+
+.answer-button--remainder {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(232, 247, 255, 0.98));
+  box-shadow:
+    0 14px 28px rgba(22, 119, 200, 0.14),
+    inset 0 0 0 2px rgba(22, 119, 200, 0.16);
+}
+
+.answer-button--selected,
+.answer-button--selected:disabled {
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.answer-button--quotient.answer-button--selected {
+  background: linear-gradient(135deg, #7d2bd1, #b74be3);
+  box-shadow:
+    0 16px 34px rgba(141, 53, 212, 0.3),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.22);
+}
+
+.answer-button--remainder.answer-button--selected {
+  background: linear-gradient(135deg, #0076c9, #23c4d8);
+  box-shadow:
+    0 16px 34px rgba(22, 119, 200, 0.28),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.22);
 }
 
 .answer-button::after {
@@ -501,6 +572,31 @@ h1 {
     min-height: 68px;
     border-radius: 16px;
     font-size: 1.9rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .answer-columns {
+    gap: 8px;
+  }
+
+  .answer-group {
+    gap: 8px;
+    padding: 8px;
+    border-radius: 16px;
+  }
+
+  .answer-group__label {
+    font-size: 0.8rem;
+  }
+
+  .answer-grid {
+    gap: 8px;
+  }
+
+  .answer-button {
+    min-height: 62px;
+    font-size: 1.65rem;
   }
 }
 

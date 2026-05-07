@@ -1,8 +1,7 @@
-import type { AnswerState, DivisionProblem, GamePhase } from '../types';
+import type { AnswerState, DivisionProblem } from '../types';
 
 type ProblemCardProps = {
   problem: DivisionProblem;
-  phase: GamePhase;
   selectedQuotient: number | null;
   selectedRemainder: number | null;
   answerState: AnswerState;
@@ -14,7 +13,6 @@ type ProblemCardProps = {
 
 export const ProblemCard = ({
   problem,
-  phase,
   selectedQuotient,
   selectedRemainder,
   answerState,
@@ -24,9 +22,6 @@ export const ProblemCard = ({
   onPickRemainder,
 }: ProblemCardProps) => {
   const isChecking = answerState !== 'idle';
-  const activeOptions = phase === 'quotient' ? problem.quotientOptions : problem.remainderOptions;
-  const selectedAnswer = phase === 'quotient' ? selectedQuotient : selectedRemainder;
-  const handlePick = phase === 'quotient' ? onPickQuotient : onPickRemainder;
   const quotientClass =
     selectedQuotient === null
       ? 'math-slot--empty'
@@ -44,15 +39,19 @@ export const ProblemCard = ({
       ? 'Správně!'
       : answerState === 'wrong'
         ? 'Zkus to ještě jednou'
-        : phase === 'quotient'
-          ? 'Nejdříve vyber podíl.'
-          : 'Teď vyber zbytek.';
+        : selectedQuotient === null && selectedRemainder === null
+          ? 'Vyber podíl vlevo a zbytek vpravo.'
+          : selectedQuotient === null
+            ? 'Ještě vyber podíl.'
+            : selectedRemainder === null
+              ? 'Ještě vyber zbytek.'
+              : 'Kontroluji odpověď.';
 
   return (
     <section className="problem-card" aria-live="polite">
       <div className="problem-card__header">
         <span>Příklad {round} z {totalRounds}</span>
-        <span>{phase === 'quotient' ? '1. podíl' : '2. zbytek'}</span>
+        <span>Podíl a zbytek</span>
       </div>
 
       <div className="math-expression">
@@ -70,30 +69,70 @@ export const ProblemCard = ({
 
       <p className="status-line">{statusText}</p>
 
-      <div className="answer-grid">
-        {activeOptions.map((option) => {
-          const isSelected = selectedAnswer === option;
-          const feedbackClass =
-            answerState === 'idle'
-              ? ''
-              : answerState === 'correct' && isSelected
-                ? 'answer-button--correct'
-                : answerState === 'wrong' && isSelected
-                  ? 'answer-button--wrong'
-                  : '';
+      <div className="answer-columns">
+        <div className="answer-group answer-group--quotient">
+          <p className="answer-group__label">Podíl</p>
+          <div className="answer-grid answer-grid--compact">
+            {problem.quotientOptions.map((option) => {
+              const isSelected = selectedQuotient === option;
+              const feedbackClass =
+                answerState === 'idle'
+                  ? isSelected
+                    ? 'answer-button--selected'
+                    : ''
+                  : answerState === 'correct' && isSelected
+                    ? 'answer-button--correct'
+                    : answerState === 'wrong' && isSelected
+                      ? 'answer-button--wrong'
+                      : '';
 
-          return (
-            <button
-              className={`answer-button ${feedbackClass}`}
-              type="button"
-              key={option}
-              disabled={isChecking}
-              onClick={() => handlePick(option)}
-            >
-              {option}
-            </button>
-          );
-        })}
+              return (
+                <button
+                  className={`answer-button answer-button--quotient ${feedbackClass}`}
+                  type="button"
+                  key={option}
+                  disabled={isChecking}
+                  aria-pressed={isSelected}
+                  onClick={() => onPickQuotient(option)}
+                >
+                  {option}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="answer-group answer-group--remainder">
+          <p className="answer-group__label">Zbytek</p>
+          <div className="answer-grid answer-grid--compact">
+            {problem.remainderOptions.map((option) => {
+              const isSelected = selectedRemainder === option;
+              const feedbackClass =
+                answerState === 'idle'
+                  ? isSelected
+                    ? 'answer-button--selected'
+                    : ''
+                  : answerState === 'correct' && isSelected
+                    ? 'answer-button--correct'
+                    : answerState === 'wrong' && isSelected
+                      ? 'answer-button--wrong'
+                      : '';
+
+              return (
+                <button
+                  className={`answer-button answer-button--remainder ${feedbackClass}`}
+                  type="button"
+                  key={option}
+                  disabled={isChecking}
+                  aria-pressed={isSelected}
+                  onClick={() => onPickRemainder(option)}
+                >
+                  {option}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -9,5 +9,3 @@ export type DivisionProblem = {
 };
 
 export type AnswerState = 'idle' | 'correct' | 'wrong';
-
-export type GamePhase = 'quotient' | 'remainder';

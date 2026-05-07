@@ -3,17 +3,15 @@ import { ProblemCard } from './components/ProblemCard';
 import { ProgressBar } from './components/ProgressBar';
 import { StatPill } from './components/StatPill';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import type { AnswerState, GamePhase } from './types';
+import type { AnswerState } from './types';
 import { generateProblem } from './utils/problemGenerator';
 
 const TOTAL_ROUNDS = 12;
-const STEP_TRANSITION_MS = 450;
 const NEXT_QUESTION_MS = 650;
-const WRONG_TRANSITION_MS = STEP_TRANSITION_MS * 2;
+const WRONG_TRANSITION_MS = 900;
 
 export const App = () => {
   const [problem, setProblem] = useState(() => generateProblem());
-  const [phase, setPhase] = useState<GamePhase>('quotient');
   const [selectedQuotient, setSelectedQuotient] = useState<number | null>(null);
   const [selectedRemainder, setSelectedRemainder] = useState<number | null>(null);
   const [score, setScore] = useState(0);
@@ -25,28 +23,14 @@ export const App = () => {
   const completed = round > TOTAL_ROUNDS;
   const progressValue = useMemo(() => Math.min(round - 1, TOTAL_ROUNDS), [round]);
 
-  const markWrong = (afterAnimation?: () => void) => {
+  const markWrong = () => {
     setAnswerState('wrong');
     setStreak(0);
     window.setTimeout(() => {
-      afterAnimation?.();
+      setSelectedQuotient(null);
+      setSelectedRemainder(null);
       setAnswerState('idle');
     }, WRONG_TRANSITION_MS);
-  };
-
-  const handleQuotientPick = (value: number) => {
-    setSelectedQuotient(value);
-
-    if (value !== problem.quotient) {
-      markWrong(() => setSelectedQuotient(null));
-      return;
-    }
-
-    setAnswerState('correct');
-    window.setTimeout(() => {
-      setPhase('remainder');
-      setAnswerState('idle');
-    }, STEP_TRANSITION_MS);
   };
 
   const moveToNextProblem = (nextScore: number) => {
@@ -58,7 +42,6 @@ export const App = () => {
 
     window.setTimeout(() => {
       setProblem(generateProblem());
-      setPhase('quotient');
       setSelectedQuotient(null);
       setSelectedRemainder(null);
       setAnswerState('idle');
@@ -66,11 +49,9 @@ export const App = () => {
     }, NEXT_QUESTION_MS);
   };
 
-  const handleRemainderPick = (value: number) => {
-    setSelectedRemainder(value);
-
-    if (value !== problem.remainder) {
-      markWrong(() => setSelectedRemainder(null));
+  const checkAnswer = (quotient: number, remainder: number) => {
+    if (quotient !== problem.quotient || remainder !== problem.remainder) {
+      markWrong();
       return;
     }
 
@@ -82,9 +63,32 @@ export const App = () => {
     moveToNextProblem(nextScore);
   };
 
+  const handleQuotientPick = (value: number) => {
+    if (answerState !== 'idle') {
+      return;
+    }
+
+    setSelectedQuotient(value);
+
+    if (selectedRemainder !== null) {
+      checkAnswer(value, selectedRemainder);
+    }
+  };
+
+  const handleRemainderPick = (value: number) => {
+    if (answerState !== 'idle') {
+      return;
+    }
+
+    setSelectedRemainder(value);
+
+    if (selectedQuotient !== null) {
+      checkAnswer(selectedQuotient, value);
+    }
+  };
+
   const restart = () => {
     setProblem(generateProblem());
-    setPhase('quotient');
     setSelectedQuotient(null);
     setSelectedRemainder(null);
     setScore(0);
@@ -120,7 +124,6 @@ export const App = () => {
         ) : (
           <ProblemCard
             problem={problem}
-            phase={phase}
             selectedQuotient={selectedQuotient}
             selectedRemainder={selectedRemainder}
             answerState={answerState}
